@@ -7,12 +7,62 @@
 	</head>
 
 <body>
+<div id="dropzone">
+    <div>
+    <h1>Arrossega el pdf descarregat del SAGA</h1>
+    <form action="upload.php" method="post" enctype="multipart/form-data">
+        O selecciona el pdf descarregat del SAGA:
+        <input type="file" name="fileToUpload" id="fileToUpload">
+    </form>
+    </div>
+</div>
 
-<form action="upload.php" method="post" enctype="multipart/form-data">
-    Afegeix el pdf descarregat del SAGA:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Enviar arxiu i descarregar el zip" name="submit">
-</form>
+<script>
+var dropzone = document.getElementById("dropzone");
+
+dropzone.ondragover = dropzone.ondragenter = function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+}
+
+dropzone.ondrop = function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    var filesArray = event.dataTransfer.files;
+    for (var i=0; i<filesArray.length; i++) {
+        sendFile(filesArray[i]);
+    }
+}
+
+
+var inputFile = document.getElementById("fileToUpload");
+inputFile.onchange = function(e){
+    if (file = inputFile.files[0]) {
+        sendFile(file);
+    }
+}
+
+function sendFile(file) {
+    console.log("sending file...")
+    var xhr = new XMLHttpRequest();
+    var fd = new FormData();
+        
+    xhr.open("POST", "/upload", true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            // completed
+        }
+    };
+        
+    xhr.upload.onprogress = function(e){
+        // e.loaded * 100 / e.total
+    }
+        
+    fd.append('fileToUpload', file);
+    xhr.send(fd);
+}
+</script>
 
 </body>
 </html>
